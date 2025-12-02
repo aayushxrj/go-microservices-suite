@@ -6,6 +6,8 @@ A Go-based microservices system featuring gRPC, RabbitMQ, authentication, loggin
 
 ```
 docker-compose up
+docker compose up -d --build broker-service
+docker compose up -d --build frontend-service
 ```
 
 # broker-service
@@ -19,4 +21,11 @@ go get github.com/go-chi/cors
 ```
 docker build -f .\broker-service\broker-service.dockerfile -t broker-service:latest .\broker-service
 docker run -d --name broker-service -p 8080:80 broker-service:latest
+```
+
+# frontend-service
+
+```
+docker build -f .\frontend\frontend-service.dockerfile -t frontend:latest .\frontend
+docker run -d --name frontend -p 8081:80 frontend:latest
 ```
