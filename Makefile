@@ -1,6 +1,7 @@
 SHELL=cmd.exe
 FRONT_END_BINARY=frontApp.exe
 BROKER_BINARY=brokerApp
+AUTH_BINARY=authApp
 
 ## up: starts all containers in the background without forcing build
 up:
@@ -26,6 +27,12 @@ down:
 build_broker:
 	@echo Building broker binary...
 	cd broker-service && set GOOS=linux&& set GOARCH=amd64&& set CGO_ENABLED=0 && go build -o ${BROKER_BINARY} ./cmd/api
+	@echo Done!
+
+## build_auth: builds the authentication binary as a linux executable
+build_auth:
+	@echo Building authentication binary...
+	cd authentication-service && set GOOS=linux&& set GOARCH=amd64&& set CGO_ENABLED=0 && go build -o ${AUTH_BINARY} ./cmd/api
 	@echo Done!
 
 ## build_front: builds the front end binary

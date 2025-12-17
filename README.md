@@ -29,3 +29,16 @@ docker run -d --name broker-service -p 8080:80 broker-service:latest
 docker build -f .\frontend\frontend-service.dockerfile -t frontend:latest .\frontend
 docker run -d --name frontend -p 8081:80 frontend:latest
 ```
+
+# authentication-service
+
+```
+go get golang.org/x/crypto/bcrypt
+go get github.com/go-chi/chi/v5
+go get github.com/go-chi/chi/v5/middleware
+go get github.com/go-chi/cors
+
+go get github.com/jackc/pgconn
+go get github.com/jackc/pgx/v4
+go get github.com/jackc/pgx/v4/stdlib
+```
