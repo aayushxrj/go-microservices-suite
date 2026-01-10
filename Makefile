@@ -2,6 +2,7 @@ SHELL=cmd.exe
 FRONT_END_BINARY=frontApp.exe
 BROKER_BINARY=brokerApp
 AUTH_BINARY=authApp
+LOGGER_BINARY=loggerApp
 
 ## up: starts all containers in the background without forcing build
 up:
@@ -39,6 +40,12 @@ build_auth:
 build_front:
 	@echo Building front end binary...
 	cd frontend && set CGO_ENABLED=0&& set GOOS=windows&& go build -o ${FRONT_END_BINARY} ./cmd/web
+	@echo Done!
+
+## build_logger: builds the logger binary as a linux executable
+build_logger:
+	@echo Building logger binary...
+	cd logger-service && set GOOS=linux&& set GOARCH=amd64&& set CGO_ENABLED=0 && go build -o ${LOGGER_BINARY} ./cmd/api
 	@echo Done!
 
 ## start: starts the front end
