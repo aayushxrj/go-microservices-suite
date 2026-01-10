@@ -42,3 +42,17 @@ go get github.com/jackc/pgconn
 go get github.com/jackc/pgx/v4
 go get github.com/jackc/pgx/v4/stdlib
 ```
+
+
+# logger service (to view db data inside mongo shell)
+```
+docker exec -it 3da31bc9fb84 mongo -u admin -p password --authenticationDatabase admin
+```
+```
+show dbs
+use logs
+show collections
+```
+```
+db.logs.find().limit(10).pretty()
+```
