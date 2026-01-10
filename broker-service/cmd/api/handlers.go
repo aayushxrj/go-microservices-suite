@@ -11,11 +11,17 @@ import (
 type RequestPayload struct {
 	Action string      `json:"action"`
 	Auth   AuthPayload `json:"auth,omitempty"`
+	Log    LogPayload  `json:"log,omitempty"`
 }
 
 type AuthPayload struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+type LogPayload struct {
+	Name string `json:"name"`
+	Data string `json:"data"`
 }
 
 func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
@@ -50,6 +56,9 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 	case "auth":
 		log.Println("HandleSubmission: auth called")
 		app.authenticate(w, requestPayload.Auth)
+	case "log":
+		log.Println("HandleSubmission: log called")
+		app.logItem(w, requestPayload.Log)
 	default:
 		log.Println("HandleSubmission: default called")
 		app.errorJSON(w, fmt.Errorf("unknown action"))
@@ -114,4 +123,43 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+func (app *Config) logItem(w http.ResponseWriter, l LogPayload) {
+	log.Println("logItem called")
+
+	// create some json we will send to the logger microservice
+	jsonData, _ := json.MarshalIndent(l, "", "\t")
+
+	// call the logger microservice
+	req, err := http.NewRequest("POST", "http://logger-service:8083/log", bytes.NewBuffer(jsonData))
+	if err != nil {
+		log.Println(err)
+		app.errorJSON(w, err)
+		return
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println(err)
+		app.errorJSON(w, err)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, fmt.Errorf("error calling logger service"))
+		return
+	}
+
+	var jsonFromService jsonResponse
+
+	jsonFromService.Error = false
+	jsonFromService.Message = "logged"
+
+	_ = app.writeJSON(w, http.StatusAccepted, jsonFromService)
+	
 }
