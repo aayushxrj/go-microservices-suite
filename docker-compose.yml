@@ -81,3 +81,23 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+
+  mail-service:
+    build:
+      context: ./mail-service
+      dockerfile: ./mail-service.dockerfile
+    restart: always
+    ports:
+      - "8084:8084"
+    environment:
+      MAIL_DOMAIN: localhost
+      MAIL_HOST: mailhog
+      MAIL_PORT: 1025
+      MAIL_USERNAME: ""
+      MAIL_PASSWORD: ""
+      MAIL_ENCRYPTION: none
+      FROM_NAME: "John Smith"
+      FROM_ADDRESS: "john.smith@example.com"
+    deploy:
+      mode: replicated
+      replicas: 1
