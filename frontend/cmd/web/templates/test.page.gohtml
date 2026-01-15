@@ -10,6 +10,7 @@
                 <a id="brokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Broker</a>
                 <a id="authBrokerBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Auth Broker</a>
                 <a id="logBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Log Broker</a>
+                <a id="mailBtn" class="btn btn-outline-secondary" href="javascript:void(0);">Test Mail Broker</a>
 
                 <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
                     <span class="text-muted">Output shows here...</span>
@@ -39,6 +40,7 @@
     let brokerBtn = document.getElementById('brokerBtn');
     let authBrokerBtn = document.getElementById('authBrokerBtn');
     let logBtn = document.getElementById('logBtn');
+    let mailBtn = document.getElementById('mailBtn');
 
     let output = document.getElementById('output');
     let sent = document.getElementById('payload');
@@ -137,6 +139,38 @@
         .catch(error => {
             received.textContent = error;
             output.innerHTML = 'Log Request failed';
+        });
+    });
+
+    mailBtn.addEventListener('click', function() {
+        output.innerHTML = 'Please wait...';
+
+        let payload = {
+            
+            "action": "mail",
+            "mail": {
+                "from": "sender@example.com",
+                "to": "recipient@example.com",
+                "subject": "Test Email",
+                "message": "This is a test email sent from the frontend."
+            }
+        };
+        sent.textContent = JSON.stringify(payload, null, 4);
+        fetch('http://localhost:8080/handle', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            received.textContent = JSON.stringify(data, null, 4);
+            output.innerHTML = 'Mail Request completed';
+        })
+        .catch(error => {
+            received.textContent = error;
+            output.innerHTML = 'Mail Request failed';
         });
     });
     
